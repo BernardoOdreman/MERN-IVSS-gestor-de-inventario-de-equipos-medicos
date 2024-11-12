@@ -1,0 +1,26 @@
+input {
+    margin-left: auto; /* Pushes the buscador to the right */
+    padding: 0.5rem; /* Adjusts padding for aesthetics */
+
+    border-radius: 25px; /* Rounded borders */
+    border: 1px solid #ced4da; /* Border color */
+    padding: 0.5rem; /* Padding inside input */
+    outline: none; /* Removes default outline */
+}
+
+ input:focus {
+    border-color: #80bdff; /* Border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, .25); /* Adds shadow on focus */
+}
+
+.panel {
+    position: absolute;
+    top: 100%; /* Coloca el panel justo debajo del input */
+    left: 0; /* Alinea el panel al inicio del input */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000; /* Asegúrate de que se muestre por encima de otros elementos */
+    width: 100%; /* Asegura que el panel tenga el mismo ancho que el input */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Agrega una sombra para más visibilidad */
+}

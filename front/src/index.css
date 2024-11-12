@@ -1,0 +1,25 @@
+.none{
+    display: none;
+}
+
+.btn-dark{
+    background-color: darkgray;
+}
+ 
+
+.input-dark{
+    background-color: darkgray;
+  }
+  
+  .input-dark:focus{
+    background-color: black;
+    color: beige;
+  }
+
+.body{
+    background: linear-gradient(
+        black, blue
+    )
+}
+
+

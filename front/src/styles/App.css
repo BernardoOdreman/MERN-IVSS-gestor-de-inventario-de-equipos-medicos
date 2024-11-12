@@ -1,0 +1,25 @@
+.bg-red{
+  background-color: #aa0003;
+}
+
+
+
+
+.footer-container {
+  margin-top: 10px; /* Margen superior para separar del contenido */
+  margin-top: auto; /* Empuja el footer hacia abajo */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 1000;
+  
+  
+  
+}
+
+footer {
+  flex-shrink: 0; /* Evita que el footer se encoja */
+  
+}

@@ -1,0 +1,88 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.mb-4 {
+  margin-bottom: 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-success {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.hot-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.hot-table th, .hot-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.hot-table th {
+  background-color: #f0f0f0;
+}
+
+.hot-table td {
+  background-color: #fff;
+}
+
+.hot-table td img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+footer {
+  margin-top: 20px;
+  text-align: center;
+  color: #666;
+}
+
+
+/*
+ aria-hidden="true" se está aplicando a un elemento interactivo, 
+ como un <textarea> que puede recibir el foco.
+  un elemento con aria-hidden="true" no debe ser interactuable ni visible para los usuarios de 
+  tecnologías asistivas, como lectores de pantalla.
+*/
+.handsontableInput[aria-hidden="true"] {
+  aria-hidden: false !important;
+  visibility: visible !important;
+  display: block !important;
+}
