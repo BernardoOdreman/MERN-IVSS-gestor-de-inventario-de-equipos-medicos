@@ -1,19 +1,60 @@
 import React, { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { HotTable } from '@handsontable/react';
 import axios from 'axios';
 import { htmlToPDF } from '../components/tableFunctions';
 import Papa from 'papaparse'
-import 'jspdf-autotable'; 
+import 'jspdf-autotable';
 import 'handsontable/dist/handsontable.full.css'; // Estilos de Handsontable
 import { usetheme } from "./themeContext";
-
+import { useUser } from './userContext';
+import { ENDPOINT } from '../../env';
 import "../styles/AddEquipos.css";
 
 
 
 
 const AddEquipos = () => {
+
+  const { user } = useUser();
+
+
+
+  if (!user) {
+    return <div className='container center'>
+      <h1 className='h1 text-danger'> Ups! Error 401: Unauthorized </h1>
+      <h2 className='h2' >  POR FAVOR  {'\u00A0'}
+        <NavLink to='/login'>INICIAR SESSIÓN</NavLink>
+        {'\u00A0'} {/*espacio en blanco*/}
+        PARRA ACCEDER A ESTAR RUTA </h2>
+    </div>
+  }
+
+
+
+  // Función para validar si la fecha está en formato YYMMDD
+  function validateDate(dateString) {
+    console.log(dateString)
+    const regex = /^(19|20)\d{2}[-/](0[1-9]|1[0-2])[-/](0[1-9]|[12]\d|3[01])$/;
+
+    // Verificar si el formato es correcto
+    if (!regex.test(dateString)) {
+      return false;
+    }
+
+    // Obtener los componentes de la fecha
+    const parts = dateString.split(/[-/]/);
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const day = parseInt(parts[2], 10);
+
+    // Validar la fecha real
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  }
+
+
   const { theme } = usetheme();
   const { hospital } = useParams();
   const tableRef = useRef();
@@ -64,21 +105,89 @@ const AddEquipos = () => {
   };
 
   const columns = [
-    { data: 'nombre', title: 'Nombre', width: 100 },
-    { data: 'marca', title: 'Marca', width: 100 },
-    { data: 'modelo', title: 'Modelo', width: 100 },
-    { data: 'serial', title: 'Serial', width: 80 },
-    { data: 'estado', title: 'Estado', width: 100 },
-    { data: 'area', title: 'Área', width: 100 },
-    { data: 'fechaIngreso', title: 'Fecha de Ingreso', width: 100 },
-    { data: 'serviciosRepuestos', title: 'Servicios o Repuestos Requeridos', width: 200 },
-    { data: 'observaciones', title: 'Observaciones', width: 100 },
+    {
+      data: 'nombre', title: 'Nombre', width: 100, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
+    {
+      data: 'marca', title: 'Marca', width: 100, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
+    {
+      data: 'modelo', title: 'Modelo', width: 100, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
+    {
+      data: 'serial', title: 'Serial', width: 80, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
+    {
+      data: 'estado', title: 'Estado', width: 100, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        ``
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
+    {
+      data: 'area', title: 'Área', width: 100, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
+    {
+      data: 'fechaIngreso', title: 'Fecha de Ingreso', width: 100, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
+    {
+      data: 'serviciosRepuestos', title: 'Servicios o Repuestos Requeridos', width: 200, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
+    {
+      data: 'observaciones', title: 'Observaciones', width: 100, renderer: (instance, td, row, col, prop, value, cellProperties) => {
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';
+        return td;
+      }
+    },
     {
       data: 'imagenRecortada',
       title: 'Imagen',
 
       renderer: (instance, td, row, col, prop, value, cellProperties) => {
         td.innerHTML = '';
+
+        td.style.backgroundColor = theme ? '#444' : '000';
+        td.style.color = theme ? '#fff' : '000';
+        td.innerText = value || '';  // Mostrar el valor en la celda
 
         const button = document.createElement('button');
         button.textContent = 'Cargar Imagen';
@@ -161,6 +270,12 @@ const AddEquipos = () => {
             continue;
           }
         }
+        console.log(row)
+
+        if (!validateDate(row.fechaIngreso)) {
+          alert(`La fecha en la fila ${rowsToSend.indexOf(row) + 1} es incorrecta. La fecha debe estar en el formato YYMMDD.`);
+          return; // No enviar si la fecha es incorrecta
+        }
 
         // Comprobar duplicados
         if (serialSet.has(row.serial)) {
@@ -207,7 +322,7 @@ const AddEquipos = () => {
       }
 
       // Enviar los datos y archivos al servidor
-      axios.post(`http://localhost:3000/Insertequipos`, dataForm, {
+      axios.post(`${ENDPOINT}/Insertequipos`, dataForm, {
         headers: {
           'Content-Type': 'multipart/form-data',  // Usamos multipart/form-data para enviar archivos
         },
@@ -229,12 +344,12 @@ const AddEquipos = () => {
           imagenOriginal: '',   // Para almacenar la URL de la imagen original
         }]);
 
-       
+
         // Convertir el HTML a PDF y descargarlo
-        htmlToPDF(rowsToSend, hospital);
+        htmlToPDF(rowsToSend, hospital, user.nombre);
 
       }).catch(err => {
-        alert(`Error al enviar, el serial ${err.response.data.sqlMessage.split(' ')[2]} ya ha sido ingresado`);
+        //alert(`Error al enviar, el serial ${err.response.data.sqlMessage.split(' ')[2]} ya ha sido ingresado`);
         console.log(err);
       });
 
@@ -244,7 +359,7 @@ const AddEquipos = () => {
     }
   };
 
- 
+
 
 
 
@@ -458,53 +573,49 @@ const AddEquipos = () => {
     setShowExportModal(false); // Cerrar el modal después de la exportación
   };
 
-
   return (
-    <div className={`container ${theme ? 'bg-dark' : 'light-theme'}`}>
-      <h2 className={` text-center ${theme ? 'text-light' : 'text-dark'}`}>{hospital}</h2>
+    <div className={`container py-4 ${theme ? 'bg-dark' : 'light-theme'}`}>
+      <h2 className={`text-center ${theme ? 'text-light' : 'text-dark'}`}>{hospital}</h2>
 
-      <div className="row justify-content-center ">
-
-        <div className="col-md-3 ">
-          <button onClick={addRow} className={`btn ${theme ? 'btn-dark' : 'btn-success'} btn-block`}>
+      <div className="row justify-content-center mb-4">
+        <div className="col-md-3 d-flex justify-content-between mb-3">
+          <button onClick={addRow} className="btn btn-success btn-block w-100">
             Añadir Fila
           </button>
         </div>
 
-        <div className="col-md-3 ">
-          <button onClick={removeRow} className={`btn ${theme ? 'btn-dark' : 'btn-danger'} btn-block`}>
+        <div className="col-md-3 d-flex justify-content-between mb-3">
+          <button onClick={removeRow} className="btn btn-danger btn-block w-100">
             Eliminar Fila
           </button>
         </div>
 
-        <div className="col-md-3 ">
-          <label htmlFor="file-upload" className={`btn ${theme ? 'btn-dark' : 'btn-info'} btn-block text-center`}>
-            {theme ? 'Cargar Archivo' : 'Cargar CSV/XLSX'}
-            <input
-              id="file-upload"
-              type="file"
-              accept=".csv, .xlsx"
-              onChange={handleFileImport} // Cambiado aquí
-              className="d-none" // Oculta el input de tipo file
-            />
+        <div className="col-md-3 mb-3">
+          <label htmlFor="file-upload" className="btn btn-info btn-block w-100">
+            Seleccionar archivo
           </label>
+          <input
+            type="file"
+            id="file-upload"
+            accept=".csv, .xlsx"
+            onChange={handleFileImport}
+            className="d-none" // Oculta el input real
+          />
         </div>
 
 
-        <div className="col-md-3 ">
+        <div className="col-md-3 d-flex justify-content-between mb-3">
           <button
-            className={`btn ${theme ? 'btn-dark' : 'btn-primary'} btn-block`}
+            className="btn btn-primary btn-block w-100"
             onClick={() => setShowExportModal(true)}
           >
             Exportar
           </button>
-
         </div>
 
-        <div className="col-md-3 ">
-
+        <div className="col-md-3 d-flex justify-content-between mb-3">
           <button
-            className={`btn ${theme ? 'btn-dark' : 'btn-primary'} btn-block mt-2`}
+            className="btn btn-primary btn-block w-100"
             onClick={sendDataToServer}
           >
             Enviar Datos
@@ -512,8 +623,14 @@ const AddEquipos = () => {
         </div>
       </div>
 
+
+      {/* Modal para Exportación */}
       {showExportModal && (
-        <div className={`modal show ${theme ? 'modal-dark' : 'modal-light'}`} style={{ display: 'block' }} role="dialog">
+        <div
+          className={`modal show ${theme ? 'modal-dark' : 'modal-light'}`}
+          style={{ display: 'block' }}
+          role="dialog"
+        >
           <div className="modal-dialog">
             <div className={`modal-content ${theme ? 'bg-dark' : 'bg-light'}`}>
               <div className="modal-header">
@@ -551,6 +668,7 @@ const AddEquipos = () => {
         </div>
       )}
 
+      {/* Tabla */}
       <div className="table-responsive" ref={tableRef}>
         <HotTable
           data={data}
@@ -562,16 +680,18 @@ const AddEquipos = () => {
           licenseKey="non-commercial-and-evaluation"
           contextMenu={['row_above', 'row_below', 'remove_row', 'undo', 'redo']}
           cellRenderer={(row, col, value) => {
-            return `<div style="padding: 10px; font-size: 16px;">${value}</div>`;
+            return `<div  style="padding: 10px; font-size: 16px;">${value}</div>`;
           }}
         />
       </div>
 
+      {/* Footer */}
       <footer className={`mt-4 text-center ${theme ? 'text-light' : 'text-muted'}`}>
-        <p> IVSS - Tecnologia Medica </p>
+        <p>IVSS - Tecnología Médica</p>
       </footer>
     </div>
   );
+
 
 
 

@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from './userContext';
 import { usetheme } from './themeContext';
 import axios from 'axios';
- 
+import { ENDPOINT } from '../../env';
+
 const Login = () => {
-  const HOST = import.meta.env.REACT_APP_HOST || 'http://localhost:3000';
+ 
   axios.defaults.withCredentials = true;
   const { user, setUser } = useUser();
   const { theme } = usetheme();  // Aquí obtenemos el valor del tema (false para claro, true para oscuro)
@@ -15,17 +16,17 @@ const Login = () => {
   const [error, setError] = useState(null);
 
   const handleSubmit = (event) => {
+    setError(false);
+
     event.preventDefault();
-    axios.post(`${HOST}/login`, { ci, password })
+    axios.post(`${ENDPOINT}/login`, { ci, password })
       .then((response) => {
         if (response.data) {
           setError(false);
           setUser(response.data.userData);
-        } else {
-          setError("Usuario o clave inválidos");
-        }
+        }  
       }).catch((error) => {
-        setError('Error al iniciar sesión');
+        setError("Usuario o clave inválidos");
         console.error('Error:', error);
       });
   };
@@ -44,6 +45,12 @@ const Login = () => {
       <div className="container-fluid h-custom">
         <div className="row d-flex justify-content-center align-items-center h-100">
           {/* Columna de imagen */}
+        
+
+        <div>
+          
+        </div>
+
           <div className="col-md-9 col-lg-6 col-xl-5">
             <img
               src="/ivss.svg"
@@ -110,6 +117,8 @@ const Login = () => {
               
             </form>
           </div>
+
+
         </div>
       </div>
     </section>

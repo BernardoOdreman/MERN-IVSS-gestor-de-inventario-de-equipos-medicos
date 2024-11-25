@@ -1,7 +1,58 @@
-.bg-red{
-  background-color: #aa0003;
+.container{
+  max-width: 1200px;
+}
+.dark{
+  background-color: #333;
+ }
+
+.dark .form-control {
+  background-color: rgba(68, 72, 88, 0.719);
+  color: #fff;
 }
 
+.dark  th {
+  color: #fff;
+}
+
+.dark  td {
+  color: #fff;
+}
+
+.dark h1{
+  color: #fff;
+}
+
+.dark  span {
+  color: #fff;
+}
+
+.dark .container{
+  background-color: #333;
+  color: #fff;
+}
+
+.dark .card{
+  background-color: #454545;
+  color: #fff;
+}
+
+.dark input{
+  background-color: rgba(68, 72, 88, 0.719);
+  color: #fff;
+}
+.dark input:focus {
+  background-color: rgba(68, 72, 88, 0.719);
+  color: #fff;
+}
+
+.bg-red{
+  background-color: rgba(18, 18, 182, 0.768);
+  height: 10px;
+}
+
+.dark .navbar-brand{
+  color: white;
+}
 
 
 

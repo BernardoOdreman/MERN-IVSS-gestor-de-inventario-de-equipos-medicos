@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
- 
+import { ENDPOINT } from '../../env';
+
 const Usuarios = () => {
+ 
   const [usuarios, setUsuarios] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
@@ -9,13 +11,13 @@ const Usuarios = () => {
 
   useEffect(() => {
     // Obtener los usuarios cuando el componente se monta
-    axios.get('http://localhost:3000/getUsuarios')
+    axios.get(`${ENDPOINT}/getUsuarios`)
       .then(response => setUsuarios(response.data))
       .catch(error => console.error('Error al obtener usuarios', error));
   }, []);
 
   const eliminarUsuario = (id) => {
-    axios.delete(`http://localhost:3000/EliminarUsuarios/${id}`)
+    axios.delete(`${ENDPOINT}/EliminarUsuarios/${id}`)
       .then(() => {
         // Después de eliminar, actualizamos la lista de usuarios
         setUsuarios(usuarios.filter(usuario => usuario.id !== id));

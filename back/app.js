@@ -7,7 +7,7 @@ import multer from 'multer'
 import bodyParser from 'body-parser'
 
 import {
-  cambiarClaveUsuario, getEmail, getReportes, obtenerEquiposConImagen, eliminarEquipos,
+  actualizarUsuario, cambiarClaveUsuario, getEmail, getReportes, obtenerEquiposConImagen, eliminarEquipos,
   obtenerUsuarios, eliminarUsuario, insertarEquiposConImagenes, crearUsuario,
   eliminarHospital, getHospitals, insertHospital, getHospitalId, addReportes,
   getEquiposPorHospital, login
@@ -21,11 +21,26 @@ const app = express();
 const SECRET = process.env.SECRET;
 const PORT = process.env.PORT || 3000;
 const CLIENT = process.env.PORT.CLIENT;
-const k = process.env.PORT.K;
-
+ 
 app.use(express.json());// Middleware para parsear solicitudes JSON
 app.use(cookieParser());// Middleware para aceptar las cookies
-const ALLOWED_ORIGINS = [CLIENT, 'http://localhost:38541', k, '192.168.1.136:38541', 'http://localhost:5173', '192.168.1.136:3000'];
+
+const ALLOWED_ORIGINS = [
+
+  CLIENT,
+
+  'http://0.0.0.0:5173',
+  'http://0.0.0.0:5174',
+
+  'http://192.168.1.136:5174',
+  'http://192.168.1.136:5173',
+
+  'http://192.168.1.106:5173',
+  'http://192.168.1.106:5174',
+
+  'http://localhost:5174/',
+  'http://localhost:5173',
+];
 
 app.use(bodyParser.json({ limit: '50mb' }));  // Aumenta el límite de 50 MB
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -52,33 +67,41 @@ const generateToken = (user) => {
   const token = jwt.sign({ user }, SECRET, { expiresIn: '6h' })
   return token
 }
+
 const generateTokenRecuparacion = (user) => {
-  const token = jwt.sign({ user }, SECRET, { expiresIn: '5m' })
+  const token = jwt.sign({ user }, Date.now, { expiresIn: '5m' })
   return token
 }
-const authenticateJWTwithAccses = (req, res, next) => {
-  const token = req.cookies['token'];
 
-  if (token) {
-    jwt.verify(token, SECRET, (err, user) => {
-      if (err) {
-        console.log(err);
-        return res.sendStatus(403); // Forbidden
-      }
 
-      req.user = user;
-      const userData = req.user; // Esto contiene el JSON del token
-      if (userData.user.tipoAcceso == 3) {
-        next();
-      } else {
-        res.status(401).send('Unauthorized'); // Unauthorized
-      }
+const authenticateJWTwithAccsesLevel = (requiredAccessLevel) => {
+  return (req, res, next) => {
+    const token = req.cookies['token'];
 
-    });
-  } else {
-    res.status(401).send('Unauthorized'); // Unauthorized
-  }
+
+    if (token) {
+      jwt.verify(token, SECRET, (err, user) => {
+        if (err) {
+          console.log(err);
+          return res.sendStatus(403); // Forbidden
+        }
+
+        req.user = user;
+        const userData = req.user; // Esto contiene el JSON del token
+        console.log(userData.user.tipoAcceso, requiredAccessLevel, userData.user.tipoAcceso >= requiredAccessLevel)
+
+        if (userData.user.tipoAcceso >= requiredAccessLevel) {
+          next();
+        } else {
+          res.status(401).send('Unauthorized'); // Unauthorized
+        }
+      });
+    } else {
+      res.status(401).send('Unauthorized'); // Unauthorized
+    }
+  };
 };
+
 
 const authenticateJWT = (req, res, next) => {
   const token = req.body.codigoRecuperacion;
@@ -100,6 +123,7 @@ const authenticateJWT = (req, res, next) => {
     res.status(401).send('Unauthorized'); // Unauthorized
   }
 };
+
 
 
 
@@ -129,6 +153,9 @@ app.post('/cambiarClaveUsuario', authenticateJWT, (req, res) => {
   })
 })
 
+
+
+
 app.post('/login', (req, res) => {
   const { ci, password } = req.body;
 
@@ -154,7 +181,9 @@ app.post('/login', (req, res) => {
 
 
       } catch (err) {
-        console.log({ Error: err })
+        console.log('Datos invalidos')
+        res.status(403).json('Cedula o clave incorrecta');
+
       }
     })
     .catch(err => {
@@ -162,11 +191,23 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.get('/auth', authenticateJWTwithAccses, (req, res) => {
-  // Aquí puedes acceder a req.user
-  const authenticatedUser = req.user; // Usuario verificado
-  console.log("Usuario autenticado:", authenticatedUser);
 
+
+app.post('/actualizarUsuario', authenticateJWTwithAccsesLevel(2), (req, res) => {
+
+  actualizarUsuario(req.body).then(response=>
+    res.status(200).send('Datos del usuario actualizados!')
+  ).catch(err=>{
+    console.log(err)
+    res.status(400).send(err)
+
+  })
+
+})
+
+app.get('/auth', authenticateJWTwithAccsesLevel(2), (req, res) => {
+
+  const authenticatedUser = req.user; // Usuario verificado
   // Envía una respuesta con los datos del usuario
   res.json({
     message: 'Usuario autenticado',
@@ -188,7 +229,7 @@ app.get('/getData', async (req, res) => {
   res.send(hospitales)
 })
 
-app.post('/insertHospital', authenticateJWTwithAccses, (req, res) => {
+app.post('/insertHospital', authenticateJWTwithAccsesLevel(3), (req, res) => {
 
   insertHospital(req.body)
     .then((id) => {
@@ -201,26 +242,28 @@ app.post('/insertHospital', authenticateJWTwithAccses, (req, res) => {
 });
 
 
-app.post('/Insertequipos', upload.any(), (req, res) => {
+app.post('/Insertequipos', authenticateJWTwithAccsesLevel(2), upload.any(), (req, res) => {
   const equipos = req.body.equipos;
-
-  getHospitalId(req.body.hospitalNombre).then(hospital_id => {
-    
-    insertarEquiposConImagenes({ hospital_id, equipos }).then(() => {
+  try {
+    getHospitalId(req.body.hospitalNombre).then(hospital_id => {
+      insertarEquiposConImagenes({ hospital_id, equipos }).then(() => {
         res.status(200).send('Equipos procesados correctamente');
       }).catch(err => {
         console.log(err);
         res.status(520).send(err);
       });
-      
-  }).catch(err => {
-    console.log('Error fetching hospital ID:', err);
-    res.status(520).send(err);
-  });
+    }).catch(err => {
+      console.log('Error fetching hospital ID:', err);
+      res.status(520).send(err);
+    });
+  } catch (err) {
+    console.log(err)
+  }
+
 });
 
 
-app.delete('/eliminarHospital/:id', async (req, res) => {
+app.delete('/eliminarHospital/:id', authenticateJWTwithAccsesLevel(3), async (req, res) => {
   await eliminarHospital(req.params.id)
 })
 
@@ -230,14 +273,13 @@ app.get('/getEquipos/:x', async (req, res) => {
 
 })
 
-app.post('/crearUsuario', authenticateJWTwithAccses, async (req, res) => {
+app.post('/crearUsuario', authenticateJWTwithAccsesLevel(3), async (req, res) => {
   crearUsuario(req.body)
 
 })
 
 
-
-app.get('/getUsuarios', async (req, res) => {
+app.get('/getUsuarios', authenticateJWTwithAccsesLevel(3), async (req, res) => {
   try {
     const usuarios = await obtenerUsuarios();
     res.json(usuarios);
@@ -247,7 +289,7 @@ app.get('/getUsuarios', async (req, res) => {
 });
 
 // Eliminar un usuario
-app.delete('/EliminarUsuarios/:id', async (req, res) => {
+app.delete('/EliminarUsuarios/:id', authenticateJWTwithAccsesLevel(3), async (req, res) => {
   const { id } = req.params;
   try {
     await eliminarUsuario(id);
@@ -259,7 +301,7 @@ app.delete('/EliminarUsuarios/:id', async (req, res) => {
 
 
 
-app.post('/eliminarEquipos', authenticateJWTwithAccses, async (req, res) => {
+app.post('/eliminarEquipos', authenticateJWTwithAccsesLevel(2), async (req, res) => {
   eliminarEquipos(req.body).then(response => {
     res.status(200).send("Equipos eliminados correctamente");
   }
@@ -284,7 +326,7 @@ app.post('/obtenerEquiposConImagen', (req, res) => {
 
 })
 
-app.post('/addReporte', upload.any(), async (req, res) => {
+app.post('/addReporte', authenticateJWTwithAccsesLevel(2), upload.any(), async (req, res) => {
 
   console.log(req.body)
   addReportes(req.body).then(ok => res.status(200).send("Reportes insertados exitosamente")).catch(err => {
@@ -295,6 +337,8 @@ app.post('/addReporte', upload.any(), async (req, res) => {
 
 })
 
+
+//192.168.1.136
 app.listen(PORT, () => {
   console.log(`Servidor iniciado en el puerto ${PORT}`);
 });

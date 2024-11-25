@@ -26,3 +26,45 @@ li{
   border-radius: 5px;
   text-align: center;
 }
+
+.action-icons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px; /* Espaciado entre los iconos */
+  align-items: center;
+}
+
+.action-icon {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.action-icon:hover {
+  transform: scale(1.1);
+}
+
+img {
+  transition: transform 0.3s ease;
+}
+
+img:hover {
+  transform: scale(1.1);
+}
+
+.ver:hover{
+  border-radius: 50%;
+  background-color: rgb(178, 248, 248);
+}
+
+.eliminar:hover{
+  border-radius: 20%;
+
+  background-color: rgba(223, 6, 6, 0.904);
+}
+
+
+.mas:hover{
+  border-radius: 50%;
+  background-color: rgba(173, 240, 152, 0.87);
+
+}

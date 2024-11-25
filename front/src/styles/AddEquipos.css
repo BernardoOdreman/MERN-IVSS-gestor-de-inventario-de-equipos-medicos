@@ -1,3 +1,5 @@
+
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -28,15 +30,6 @@ h2 {
   cursor: pointer;
 }
 
-.btn-success {
-  background-color: #2ecc71;
-  color: #fff;
-}
-
-.btn-danger {
-  background-color: #e74c3c;
-  color: #fff;
-}
 
 .table-responsive {
   overflow-x: auto;
@@ -51,6 +44,7 @@ h2 {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: left;
+  
 }
 
 .hot-table th {
@@ -74,15 +68,3 @@ footer {
   color: #666;
 }
 
-
-/*
- aria-hidden="true" se está aplicando a un elemento interactivo, 
- como un <textarea> que puede recibir el foco.
-  un elemento con aria-hidden="true" no debe ser interactuable ni visible para los usuarios de 
-  tecnologías asistivas, como lectores de pantalla.
-*/
-.handsontableInput[aria-hidden="true"] {
-  aria-hidden: false !important;
-  visibility: visible !important;
-  display: block !important;
-}

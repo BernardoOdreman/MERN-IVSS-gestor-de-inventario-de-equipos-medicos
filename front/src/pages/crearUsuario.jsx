@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ENDPOINT } from '../../env';
 
 const CrearUsuario = () => {
+
+ 
 
 
 
@@ -37,7 +40,7 @@ const CrearUsuario = () => {
         setMessage("")
 
         try {
-            const response = await axios.post('http://localhost:3000/crearUsuario', formData);
+            const response = await axios.post(`${ENDPOINT}/crearUsuario`, formData);
             setMessage({ success: 'Usuario creado con éxito!', error: '' });
             alert('Usuario creado con éxito!')
             setFormData({

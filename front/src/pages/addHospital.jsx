@@ -1,27 +1,20 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useUser } from './userContext';
+import { redisVenezuela } from '../components/tableFunctions';
+import { ENDPOINT } from '../../env';
 
 const HospitalForm = () => {
+ 
   const [estado, setEstado] = useState("");
   const estadosVenezuela = [
     'Amazonas', 'Anzoátegui', 'Apure', 'Aragua', 'Barinas', 'Bolívar', 'Carabobo',
     'Cojedes', 'Delta Amacuro', 'Falcón', 'Guárico', 'Lara', 'Mérida', 'Miranda',
-    'Monagas', 'Nueva Esparta', 'Portuguesa', 'Sucre', 'Táchira', 'Trujillo',
+    'Monagas', 'a Esparta', 'Portuguesa', 'Sucre', 'Táchira', 'Trujillo',
     'Yaracuy', 'Zulia', 'Distrito Capital', 'Dependencias Federales',
-  ];
+  ];    
 
-  const redisVenezuela = [
-    { nombre: 'REDI Capital', estados: ['Miranda', 'Vargas', 'Distrito Capital'] },
-    { nombre: 'REDI Occidental', estados: ['Zulia', 'Falcón', 'Lara'] },
-    { nombre: 'REDI Los Andes', estados: ['Mérida', 'Táchira', 'Trujillo'] },
-    { nombre: 'REDI Central', estados: ['Aragua', 'Carabobo', 'Yaracuy'] },
-    { nombre: 'REDI Los Llanos', estados: ['Apure', 'Barinas', 'Cojedes', 'Guárico', 'Portuguesa'] },
-    { nombre: 'REDI Guayana', estados: ['Amazonas', 'Bolívar', 'Delta Amacuro'] },
-    { nombre: 'REDI Oriental', estados: ['Anzoátegui', 'Monagas', 'Sucre'] },
-    { nombre: 'REDI Marítima e Insular', estados: ['Nueva Esparta', 'Espacios marinos y submarinos de Venezuela'] },
-  ];
-
+  
   const { user } = useUser();
 
   const [hospital, setHospital] = useState({
@@ -32,7 +25,7 @@ const HospitalForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.post('http://localhost:3000/insertHospital', hospital)
+    axios.post(`${ENDPOINT}/insertHospital`, hospital)
       .then((response) => {
         console.log("response", response);
         alert(`El centro ${hospital.nombre} ha sido registrado con éxito`);

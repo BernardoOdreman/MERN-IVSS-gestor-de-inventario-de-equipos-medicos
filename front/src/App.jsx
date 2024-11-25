@@ -22,16 +22,14 @@ const App = () => {
 
 
   return (
-    <>
+    <div id='body' className=''>
 
       <Router>
         <UserProvider>
           <ThemeProvider>
             <Navbar />
-            <br/>
+            <hr />
             <div
-            
-
             >
               <Routes>
                 <Route path="/addHospitales" element={<HospitalForm />} />
@@ -45,7 +43,7 @@ const App = () => {
                 <Route path='/eliminarUsuarios' element={<Usuarios />} />
                 <Route path='/Reportes' element={<FichasEquipos />} />
                 <Route path='/CambiarClave' element={<CambiarClave />} />
-                
+
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </div>
@@ -53,8 +51,23 @@ const App = () => {
         </UserProvider>
       </Router>
 
-      <br/><br/><br/><br/>
-      <div className="footer-container">
+      <div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+
+      </div>
+
+
+      <div
+        className="footer-container">
         <div className="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-red">
           <div className="text-white mb-3 mb-md-0">
             Copyright © 2024. Todos los derechos reservados.
@@ -78,7 +91,8 @@ const App = () => {
           </div>
         </div>
       </div>
-    </>
+
+    </div>
   );
 };
 

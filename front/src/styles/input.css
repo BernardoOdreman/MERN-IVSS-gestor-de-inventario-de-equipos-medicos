@@ -1,26 +1,41 @@
+
+
 input {
     margin-left: auto; /* Pushes the buscador to the right */
     padding: 0.5rem; /* Adjusts padding for aesthetics */
-
     border-radius: 25px; /* Rounded borders */
-    border: 1px solid #ced4da; /* Border color */
+    border: 1px solid #000; /* Border color */
     padding: 0.5rem; /* Padding inside input */
     outline: none; /* Removes default outline */
 }
+
+button{
+    margin-right: 20px;
+}
+ 
 
  input:focus {
     border-color: #80bdff; /* Border color on focus */
     box-shadow: 0 0 5px rgba(0, 123, 255, .25); /* Adds shadow on focus */
 }
+.input-group {
+    position: fixed; /* Fija el buscador en la parte superior */
+    top: 70px; /* Distancia desde la parte superior */
+    right: 20px; /* Distancia desde la parte derecha */
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+    margin-right: 10px;
+}
 
 .panel {
-    position: absolute;
-    top: 100%; /* Coloca el panel justo debajo del input */
+    position: absolute; /* Mantiene la posición del panel relativo al input */
     left: 0; /* Alinea el panel al inicio del input */
     background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
-    z-index: 1000; /* Asegúrate de que se muestre por encima de otros elementos */
-    width: 100%; /* Asegura que el panel tenga el mismo ancho que el input */
+    padding-top: 60px;
+    z-index: 999; /* Asegúrate de que se muestre por encima de otros elementos */
+    width: 100%; /* Asegura que el panel tenga un ancho fijo */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Agrega una sombra para más visibilidad */
 }
+
+/* Mantén el resto de tus estilos */

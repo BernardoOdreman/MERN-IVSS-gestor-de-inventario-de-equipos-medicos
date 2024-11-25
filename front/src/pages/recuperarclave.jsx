@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ENDPOINT } from '../../env';
 
 const CambiarClave = () => {
-    axios.defaults.withCredentials = true;
+     axios.defaults.withCredentials = true;
 
     const [cedula, setCedula] = useState('');
     const [nombre, setNombre] = useState('');
@@ -16,7 +17,7 @@ const CambiarClave = () => {
     // Función para recuperar el usuario basado en la cédula
     const recuperarUsuario = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/recuperarUsuario/${cedula}`);
+            const response = await axios.get(`${ENDPOINT}/recuperarUsuario/${cedula}`);
             setNombre(response.data.nombre);
             setCorreo(response.data.email);
             setMensajeError('');
@@ -38,7 +39,7 @@ const CambiarClave = () => {
 
         try {
             // Enviar los datos a la API, incluyendo el código de recuperación
-            await axios.post('http://localhost:3000/cambiarClaveUsuario', {
+            await axios.post(`${ENDPOINT}/cambiarClaveUsuario`, {
                 cedula,
                 nuevaClave,
                 codigoRecuperacion, // Se incluye el código de recuperación

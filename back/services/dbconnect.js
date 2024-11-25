@@ -167,7 +167,6 @@ export function insertEquipo(equipoData) {
 
 
 // Elimina todos los equipos de un hospital y luego el propio hospital.
-
 export function eliminarHospital(hospitalId) {
   const queryReportes = `DELETE FROM Reportes WHERE equipo_id IN (SELECT id FROM Equipos WHERE hospital_id = ${hospitalId})`;
   const queryImagenes = `DELETE FROM Imagenes WHERE serial IN (SELECT serial FROM Equipos WHERE hospital_id = ${hospitalId})`;
@@ -306,6 +305,47 @@ export function cambiarClaveUsuario(cedula, nuevaClave) {
   });
 }
 
+
+export function actualizarUsuario(userData) {
+  const { nombre, cedula, email, oldPassword, newPassword } = userData;
+
+  // Base query with common fields
+  let query = `
+    UPDATE Usuarios 
+    SET 
+      nombre = ?, 
+      cedula = ?, 
+      email = ? 
+  `;
+
+  // Add password update conditionally
+  const queryParams = [nombre, cedula, email];
+  
+  if (newPassword) {
+    query += ', clave = AES_ENCRYPT(?, "ivss")';
+    queryParams.push(newPassword); // Add the new password to the parameters
+  }
+
+  query += `
+    WHERE cedula = ? AND AES_DECRYPT(clave, "ivss") = ?;
+  `;
+
+  // Add the WHERE parameters
+  queryParams.push(cedula, oldPassword);
+
+  return new Promise((resolve, reject) => {
+    db.query(query, queryParams, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
+
+
 export function eliminarEquipos(ids) {
   // Asegúrate de que ids sea un array no vacío
   if (!Array.isArray(ids) || ids.length === 0) {
@@ -370,68 +410,76 @@ export function eliminarEquipos(ids) {
 
 
 export function insertarEquiposConImagenes(equiposArray) {
-  return new Promise((resolve, reject) => {
-    db.beginTransaction((err) => {
-      if (err) return reject(err);
-      const insertEquipoQuery = `
+  if(equiposArray.equipos===undefined) return('equiposArray is NULL')
+  try {
+    return new Promise((resolve, reject) => {
+      db.beginTransaction((err) => {
+        if (err) return reject(err);
+        const insertEquipoQuery = `
                 INSERT INTO Equipos (
                     nombre, marca, modelo, serial, estado, area, hospital_id, 
                     fecha_ingreso, servicios_y_repuestos_requeridos, observaciones
                 ) VALUES ?
             `;
 
-      const equiposValues = equiposArray.equipos.map(equipo => [
-        equipo.nombre,
-        equipo.marca,
-        equipo.modelo,
-        equipo.serial,
-        equipo.estado,
-        equipo.area,
-        equiposArray.hospital_id,
-        equipo.fecha_ingreso,
-        equipo.servicios_y_repuestos_requeridos,
-        equipo.observaciones
-      ]);
-      const imagenesValues = equiposArray.equipos.map(equipo => [
-        equipo.imagenRecortada,
-        equipo.serial
-      ])
+        const equiposValues = equiposArray.equipos.map(equipo => [
+          equipo.nombre,
+          equipo.marca,
+          equipo.modelo,
+          equipo.serial,
+          equipo.estado,
+          equipo.area,
+          equiposArray.hospital_id,
+          equipo.fecha_ingreso,
+          equipo.servicios_y_repuestos_requeridos,
+          equipo.observaciones
+        ]);
+        const imagenesValues = equiposArray.equipos.map(equipo => [
+          equipo.imagenRecortada,
+          equipo.serial
+        ])
 
 
-      db.query(insertEquipoQuery, [equiposValues], (err, results) => {
-        if (err) {
-          return db.rollback(() => reject(err));
-        }
+        db.query(insertEquipoQuery, [equiposValues], (err, results) => {
+          if (err) {
+            return db.rollback(() => reject(err));
+          }
 
 
-        if (imagenesValues.length > 0) {
-          const insertImagenesQuery = `
+          if (imagenesValues.length > 0) {
+            const insertImagenesQuery = `
                         INSERT INTO Imagenes (imagen,serial) VALUES ?
                     `;
-          db.query(insertImagenesQuery, [imagenesValues], (err) => {
-            if (err) {
-              return db.rollback(() => reject(err));
-            }
+            db.query(insertImagenesQuery, [imagenesValues], (err) => {
+              if (err) {
+                return db.rollback(() => reject(err));
+              }
 
+              db.commit((err) => {
+                if (err) {
+                  return db.rollback(() => reject(err));
+                }
+                resolve('Datos de equipos e imágenes insertados correctamente.');
+              });
+            });
+          } else {
+            // Si no hay imágenes, simplemente hacer commit
             db.commit((err) => {
               if (err) {
                 return db.rollback(() => reject(err));
               }
-              resolve('Datos de equipos e imágenes insertados correctamente.');
+              resolve('Datos de equipos insertados correctamente.');
             });
-          });
-        } else {
-          // Si no hay imágenes, simplemente hacer commit
-          db.commit((err) => {
-            if (err) {
-              return db.rollback(() => reject(err));
-            }
-            resolve('Datos de equipos insertados correctamente.');
-          });
-        }
+          }
+        });
       });
     });
-  });
+  } catch (err) {
+    console.log(err)
+    return(err)
+  }
+
+
 }
 
 
@@ -525,10 +573,21 @@ export function eliminarUsuario(id) {
 export function obtenerEquiposConImagen(term) {
   return new Promise((resolve, reject) => {
     const query = `
-          SELECT e.nombre, e.marca, e.serial, e.area, e.estado, i.imagen
-          FROM Equipos e
-          LEFT JOIN Imagenes i ON e.serial = i.serial
-          WHERE e.nombre LIKE ? OR e.marca LIKE ? OR e.area LIKE ? OR e.estado LIKE ?
+            SELECT e.nombre AS equipo_nombre, 
+            e.marca, 
+            e.serial, 
+            e.area, 
+            e.estado, 
+            i.imagen, 
+            h.nombre AS hospital_nombre
+      FROM Equipos e
+      LEFT JOIN Imagenes i ON e.serial = i.serial
+      LEFT JOIN Hospital h ON e.hospital_id = h.id
+      WHERE e.nombre LIKE ? 
+        OR e.marca LIKE ? 
+        OR e.area LIKE ? 
+        OR e.estado LIKE ?
+
       `;
 
     // Se usa un arreglo para evitar SQL injection

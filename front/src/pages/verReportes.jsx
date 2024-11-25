@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ENDPOINT } from '../../env';
 
 const FichasEquipos = () => {
-  const [reportes, setReportes] = useState([]); // Aquí almacenaremos los reportes
+   const [reportes, setReportes] = useState([]); // Aquí almacenaremos los reportes
   const [loading, setLoading] = useState(true); // Estado para manejar el estado de carga
   const [error, setError] = useState(null); // Estado para manejar los errores
 
@@ -10,7 +11,7 @@ const FichasEquipos = () => {
   useEffect(() => {
     const fetchReportes = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/getReportes');
+        const response = await axios.get(`${ENDPOINT}/getReportes`);
         setReportes(response.data);
         console.log(response)
       } catch (error) {
@@ -54,7 +55,7 @@ const FichasEquipos = () => {
                 <div className="card-body">
 
                   <h5 className="card-title">{reporte.equipo_nombre}</h5>
-                  <h6 className="card-subtitle mb-2 text-muted">Técnicos: {reporte.Tecnicos}</h6>
+                  <h6 className="card-subtitle mb-2 ">Técnicos: {reporte.Tecnicos}</h6>
 
                   <p className="card-text">
                     <strong>Marca:</strong> {reporte.equipo_marca || 'Sin especificar'}

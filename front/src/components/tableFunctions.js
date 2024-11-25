@@ -1,92 +1,79 @@
 import jsPDF from 'jspdf';
 
 
-const generateHTML = (dataForm, hospital) => {
-  let htmlContent = `
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.4; font-size: 10px; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { padding: 6px 8px; border: 5px solid #ddd; text-align: left; font-size: 10px; }
-        th { background-color: #f4f4f4; }
-        h1 { text-align: center; font-size: 14px; }
-        
-      </style>
-    </head>
-    <body>
-      <h1>Equipos ${hospital}</h1>
-      <hr/>
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre &nbsp;</th>
-            <th>Marca &nbsp;</th>
-            <th>Modelo &nbsp;</th>
-            <th>Serial &nbsp;</th>
-            <th>Estado &nbsp;</th>
-            <th>Área &nbsp; &nbsp;</th>
-            <th>Fecha de Ingreso &nbsp;</th>
-            <th>Servicios y Repuestos &nbsp;</th>
-            <th>Observaciones &nbsp;</th>
-            <th> &nbsp; Imagen &nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>`;
+export const redisVenezuela = [
+  { nombre: 'REDI Capital', estados: ['Miranda', 'Vargas', 'Distrito Capital'] },
+  { nombre: 'REDI Occidental', estados: ['Zulia', 'Falcón', 'Lara'] },
+  { nombre: 'REDI Los Andes', estados: ['Mérida', 'Táchira', 'Trujillo'] },
+  { nombre: 'REDI Central', estados: ['Aragua', 'Carabobo', 'Yaracuy'] },
+  { nombre: 'REDI Los Llanos', estados: ['Apure', 'Barinas', 'Cojedes', 'Guárico', 'Portuguesa'] },
+  { nombre: 'REDI Guayana', estados: ['Amazonas', 'Bolívar', 'Delta Amacuro'] },
+  { nombre: 'REDI Oriental', estados: ['Anzoátegui', 'Monagas', 'Sucre'] },
+  { nombre: 'REDI Marítima e Insular', estados: ['Nueva Esparta', 'Espacios marinos y submarinos de Venezuela'] },
+];
 
-  // Añadir las filas de equipos
-  dataForm.forEach(row => {
-    htmlContent += `
-      <tr>
-        <td>${row.nombre} &nbsp;</td>
-        <td>${row.marca} &nbsp;</td>
-        <td>${row.modelo} &nbsp;</td>
-        <td>${row.serial} &nbsp;</td>
-        <td>${row.estado} &nbsp;</td>
-        <td>${row.area} &nbsp;</td>
-        <td>${row.fechaIngreso} &nbsp;</td>
-        <td>${row.serviciosRepuestos} &nbsp;</td>
-        <td>${row.observaciones} &nbsp;</td>
-        <td>
-          <img 
-              src='${row.imagenRecortada}' 
-              alt='${row.nombre}' 
-              style='max-width: 200px; height: auto;' />
-        </td>
 
-      </tr>
-      <hr/>
-      `;
+const generatePDF = (dataForm, hospital, user) => {
+  // Cambiar el tamaño de la hoja a A3
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a3' });
+
+  // Títulos
+  doc.setFontSize(12);
+  doc.text(`Equipos ${hospital}`, 210 / 2, 20, null, null, 'center');
+  doc.setFontSize(10);
+  doc.text(`Usuario: ${user}`, 20, 30);
+
+  // Trazar una línea horizontal
+  doc.setLineWidth(0.5);
+  doc.line(20, 35, 400 - 20, 35);
+
+  // Definir las cabeceras de la tabla
+  const headers = [
+    'Nombre', 'Marca', 'Modelo', 'Serial', 'Estado', 'Área',
+    'Fecha de Ingreso', 'Servicios y Repuestos', 'Observaciones', 'Imagen'
+  ];
+
+  const startX = 20;
+  const startY = 40;
+  const rowHeight = 10;
+  const colWidths = [30, 30, 30, 30, 20, 20, 30, 35, 30, 30];
+
+  // Dibujar las cabeceras
+  headers.forEach((header, index) => {
+    doc.setFont('Arial', 'bold');
+    doc.text(header, startX + colWidths.slice(0, index).reduce((a, b) => a + b, 0), startY);
+  });
+
+  // Dibujar las filas de datos
+  let yOffset = startY + rowHeight;
+  dataForm.forEach((row) => {
+    const rowData = [
+      row.nombre, row.marca, row.modelo, row.serial, row.estado,
+      row.area, row.fechaIngreso, row.serviciosRepuestos, row.observaciones
+    ];
+
+    rowData.forEach((cell, index) => {
+      doc.setFont('Arial', 'normal');
+      doc.text(cell, startX + colWidths.slice(0, index).reduce((a, b) => a + b, 0), yOffset);
+    });
+
+    const imageWidth = 80;
+    const imageHeight = 80;
+    doc.addImage(row.imagenRecortada, 'JPEG', startX + colWidths.slice(0, 9).reduce((a, b) => a + b, 0), yOffset - 6, imageWidth, imageHeight);
+
+    yOffset += rowHeight;
+
+
+    doc.addPage();
+    yOffset = 20; // Restablecer la posición y
+
 
   });
 
-  htmlContent += `
-        </tbody>
-      </table>
-    </body>
-    </html>`;
-
-  return htmlContent;
+  // Guardar el PDF con el nombre adecuado
+  doc.save(`${hospital} - ${new Date().toLocaleString()}.pdf`);
 };
 
-export const htmlToPDF = (dataForm, nombreHospital) => {
-  const htmlContent = generateHTML(dataForm, nombreHospital );
-  const doc = new jsPDF({
-    orientation: 'landscape', // Cambia a 'landscape' si deseas un formato horizontal
-    unit: 'mm', // Usar milímetros
-    format: [1600, 1600],
-  });
-
-  // Agregar contenido HTML al PDF con ajuste de salto de página y márgenes
-  doc.html(htmlContent, {
-    callback: function (doc) {
-      // Descargar el archivo PDF
-      doc.save(`${nombreHospital} - ${Date()} .pdf`);
-    },
-    margin: [20, 20, 20, 20], // Márgenes
-    x: 10,  // Posición horizontal
-    y: 10,  // Posición vertical
-    autoPaging: true // Activar paginación automática
-  });
+export const htmlToPDF = (dataForm, nombreHospital, user) => {
+  generatePDF(dataForm, nombreHospital, user);
 };
-

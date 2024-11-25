@@ -1,33 +1,37 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import '../styles/input.css';
+import { ENDPOINT } from '../../env';
 
 const Buscador = () => {
     const [equipos, setEquipos] = useState(null);
-     const [texto, setTexto] = useState('');
+    const [texto, setTexto] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const panelRef = useRef(null);
 
+    // Función para obtener los equipos
     const getEquipo = async (e) => {
         try {
-            const response = await axios.post('http://localhost:3000/obtenerEquiposConImagen', { e });
-            
-            const equiposData = response.data.slice(0, 5).map(equipo => ({
+            const response = await axios.post(`${ENDPOINT}/obtenerEquiposConImagen`, { e });
+             
+             const equiposData = response.data.map(equipo => ({
                 nombre: equipo.nombre,
                 marca: equipo.marca,
                 modelo: equipo.modelo,
                 serial: equipo.serial,
                 area: equipo.area,
                 estado: equipo.estado,
+                hospital_nombre: equipo.hospital_nombre,  
             }));
-            setEquipos(equiposData);
 
-            setIsOpen(true); // Abre el panel al recibir la respuesta
+            setEquipos(equiposData);
+            setIsOpen(true); // Abrir el panel al recibir los datos
         } catch (error) {
             console.error('Error al obtener el equipo:', error);
         }
     };
 
+    // Cerrar el panel cuando se haga clic fuera de él
     const handleClickOutside = (event) => {
         if (panelRef.current && !panelRef.current.contains(event.target)) {
             setIsOpen(false);
@@ -53,9 +57,9 @@ const Buscador = () => {
                     aria-describedby="button-addon2" 
                 />
                 <button 
-                    disabled={texto===''}
+                    disabled={texto === ''} 
                     onClick={() => getEquipo(texto)} 
-                    className="btn btn-outline-secondary" 
+                    className="btn btn-outline-primary" 
                     type="button" 
                     id="button-addon2"
                 >
@@ -64,9 +68,8 @@ const Buscador = () => {
             </div>
 
             {isOpen && equipos && (
-                <div ref={panelRef} className="panel">
-                    
-                      <table className="table table-bordered">
+                <div ref={panelRef} className="panel" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                    <table className="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -75,6 +78,7 @@ const Buscador = () => {
                                 <th>Serial</th>
                                 <th>Área</th>
                                 <th>Estado</th>
+                                <th>Hospital</th> {/* Columna para el nombre del hospital */}
                             </tr>
                         </thead>
                         <tbody>
@@ -86,14 +90,13 @@ const Buscador = () => {
                                     <td>{equipo.serial}</td>
                                     <td>{equipo.area}</td>
                                     <td>{equipo.estado}</td>
+                                    <td>{equipo.hospital_nombre}</td> 
                                 </tr>
                             ))}
                         </tbody>
                     </table>
 
-                    {equipos.length < 5 ? (
-                        <span>Ver {equipos.length} elementos</span>
-                    ) : null}   
+                    <span>Total {equipos.length} elementos</span>
                 </div>
             )}
         </>
