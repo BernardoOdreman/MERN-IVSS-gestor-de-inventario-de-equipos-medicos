@@ -1,0 +1,245 @@
+.navbar {
+  background-color: rgba(18, 18, 182, 0.768);
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.navbar-brand{
+  color: #000;  
+}
+.navbar-brand:hover  {
+  color: #000;  
+}
+
+
+/* Para que los dropdowns se desplieguen con hover */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.nav-item.dropdown::after .dropdown-menu {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 2.3s ease, visibility 2.3s ease;
+}
+
+
+.dropUser .dropdown-menu {
+  z-index: 4000;
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Inicialmente los menús dropdown están ocultos */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Estilo de los items del menú desplegable */
+.dropdown-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #001;
+  text-decoration: none;
+}
+
+.dark .dropdown-item:hover {
+  background-color: rgb(42, 42, 65); 
+}
+
+
+.nav-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+  max-width: 1500px;
+  position: relative;
+}
+
+.nav-logo {
+  color: #001;
+  align-items: center;
+  margin-left: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 2rem;
+  flex-grow: 1;
+
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.nav-logo .icon {
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  margin-left: 16px;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  text-align: center;
+  margin-right: 2rem;
+}
+
+.nav-links {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  border-bottom: 3px solid transparent;
+}  
+
+.nav-item {
+  line-height: 40px;
+  margin-right: 1rem;
+}
+
+.nav-item:after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 0;
+  background: transparent;
+  transition: width 0.7s ease, background-color 0.5s ease;
+}
+
+.nav-item:hover:after {
+  width: 100%;
+  background: #001;
+}
+
+.nav-item .active {
+  color: #001;
+}
+
+.nav-icon {
+  display: none;
+  color: #001;
+}
+
+.nav-icon .icon {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+}
+
+
+
+
+@media screen and (max-width: 960px) {
+   
+  .navbar {
+    background-color: #fff;
+    height:  1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-top: 1px solid #009;
+    position: absolute;
+    top: -10px;
+    left: -110%;
+    opacity: 1;
+    transition: all 0.9s ease;
+  }
+
+ 
+  .nav-menu.active {
+    background: rgba(18, 18, 182, 0.768);
+    left: 0px;
+      
+    opacity: 1;
+    transition: all 0.9s ease;  
+    z-index: 1;
+  }
+  .nav-item .active {
+    color: #001;
+    border: none;
+  }
+  .nav-links {
+    padding: 1.5rem;
+    width: 1000%;
+    display: table;
+  }
+
+  .nav-logo .icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .nav-icon {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translate(-100%, -50%);
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+    color: #001;
+    z-index: 30;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
