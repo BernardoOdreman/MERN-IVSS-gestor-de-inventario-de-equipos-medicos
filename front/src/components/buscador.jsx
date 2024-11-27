@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import '../styles/input.css';
+import { usetheme } from '../pages/themeContext';
 import { ENDPOINT } from '../../env';
 
 const Buscador = () => {
+    const {theme} = usetheme();
     const [equipos, setEquipos] = useState(null);
     const [texto, setTexto] = useState('');
     const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +27,7 @@ const Buscador = () => {
             }));
 
             setEquipos(equiposData);
+            console.log(equiposData)
             setIsOpen(true); // Abrir el panel al recibir los datos
         } catch (error) {
             console.error('Error al obtener el equipo:', error);
@@ -47,14 +50,13 @@ const Buscador = () => {
 
     return (
         <>
-            <div className="input-group mb-3">
+            <div className=" input-group mb-3">
                 <input 
                     onChange={e => setTexto(e.target.value)} 
                     type="text" 
-                    className="" 
+                    className="form-control" 
                     placeholder="Buscar Equipo" 
-                    aria-label="Recipient's username" 
-                    aria-describedby="button-addon2" 
+                     
                 />
                 <button 
                     disabled={texto === ''} 
@@ -68,7 +70,8 @@ const Buscador = () => {
             </div>
 
             {isOpen && equipos && (
-                <div ref={panelRef} className="panel" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <div ref={panelRef} className={theme?'panel bg-dark text-ligh':'panel'
+                    } style={{ maxHeight: '300px', overflowY: 'auto' }}>
                     <table className="table table-bordered">
                         <thead>
                             <tr>

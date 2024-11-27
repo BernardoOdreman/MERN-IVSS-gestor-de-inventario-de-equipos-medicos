@@ -221,8 +221,6 @@ function NavBar() {
           </div>
 
         </div>
-        <Buscador />
-
       </nav>
 
       

@@ -1,4 +1,6 @@
-
+.btn-sm{
+  border-radius: 10px ;
+}
 
 .container {
   max-width: 1200px;

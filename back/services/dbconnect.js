@@ -576,9 +576,10 @@ export function obtenerEquiposConImagen(term) {
             SELECT e.nombre AS equipo_nombre, 
             e.marca, 
             e.serial, 
+            e.modelo,
             e.area, 
             e.estado, 
-            i.imagen, 
+            i.serial, 
             h.nombre AS hospital_nombre
       FROM Equipos e
       LEFT JOIN Imagenes i ON e.serial = i.serial
@@ -601,14 +602,16 @@ export function obtenerEquiposConImagen(term) {
 
       // Procesa los resultados, convirtiendo la imagen de blob a base64
       const equiposConImagen = results.map(equipo => ({
-        nombre: equipo.nombre,
+        nombre: equipo.equipo_nombre,
         marca: equipo.marca,
         serial: equipo.serial,
+        modelo: equipo.modelo,
         area: equipo.area,
         estado: equipo.estado,
+        hospital_nombre: equipo.hospital_nombre,
         imagen: equipo.imagen ? equipo.imagen.toString('base64') : null // Convierte a base64 si existe
       }));
-
+      console.log(equiposConImagen)
       resolve(equiposConImagen);
     });
   });

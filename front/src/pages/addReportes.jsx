@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { HotTable } from '@handsontable/react';
-import { htmlToPDF } from '../components/tableFunctions';
+import { htmlToPDFReportes } from '../components/tableFunctions';
 import axios from 'axios';
 import Papa from 'papaparse'
 import * as XLSX from 'xlsx';
 import 'handsontable/dist/handsontable.full.css';
 import "../styles/AddEquipos.css";
 import { useUser } from './userContext';
-
+import { fusionarFotos } from '../components/tableFunctions';
 import { ENDPOINT } from '../../env';
 
 
@@ -73,12 +73,8 @@ const AddReportes = () => {
 
   const [showExportModal, setShowExportModal] = useState(false);
 
-  const handleImageUpload = (row, file) => {
-    if (file.size > 5 * 1024 * 1024) {
-      alert('El archivo debe ser menor de 5 MB');
-      return;
-    }
 
+  const handleImageUpload = (row, file) => {
     const imageUrl = URL.createObjectURL(file);
     const img = new Image();
 
@@ -123,24 +119,45 @@ const AddReportes = () => {
       renderer: (instance, td, row, col, prop, value, cellProperties) => {
         td.innerHTML = '';
 
+
         const button = document.createElement('button');
-        button.textContent = 'Cargar Imagen';
+        button.textContent = 'Cargar Imágenes';
         button.className = 'btn-primary btn-sm';
 
         button.onclick = () => {
           const input = document.createElement('input');
           input.type = 'file';
           input.accept = 'image/*';
+          input.multiple = true; // Permitir la selección de múltiples archivos
 
           input.onchange = (event) => {
-            const file = event.target.files[0];
-            if (file) {
-              handleImageUpload(row, file);
+            const files = event.target.files;
+
+            if (files.length === 0) return; // Si no se selecciona ninguna imagen, salir
+
+            if (files.length === 1) {
+              // Si solo se selecciona una imagen, solo la procesamos sin fusionar
+              const file = files[0];
+              handleImageUpload(0, file);
+            } else if (files.length === 2) {
+              // Si se seleccionan dos imágenes, fusionarlas
+              const blob1 = files[0];
+              const blob2 = files[1];
+
+              fusionarFotos(blob1, blob2).then(file => {
+                handleImageUpload(0, file); // Usamos el archivo fusionado
+              }).catch(err => {
+                console.log('Error al fusionar las imágenes:', err);
+              });
+            } else {
+              // Si se seleccionan más de 2 imágenes, mostrar una alerta
+              alert('Por favor, selecciona un máximo de 2 imágenes.');
             }
           };
 
           input.click();
         };
+
 
         td.appendChild(button);
 
@@ -196,10 +213,10 @@ const AddReportes = () => {
         }
 
         // Validación de la fecha
-        if (!validateDate(row.fecha)) {
-          alert(`La fecha en la fila ${rowsToSend.indexOf(row) + 1} es incorrecta. La fecha debe estar en el formato YYMMDD.`);
-          return; // No enviar si la fecha es incorrecta
-        }
+        /* if (!validateDate(row.fecha)) {
+           alert(`La fecha en la fila ${rowsToSend.indexOf(row) + 1} es incorrecta. La fecha debe estar en el formato YYMMDD.`);
+           return; // No enviar si la fecha es incorrecta
+         }*/
 
         // Comprobar duplicados
         if (serialSet.has(row.serial)) {
@@ -251,7 +268,7 @@ const AddReportes = () => {
 
       // Ahora, generamos el PDF con los datos
       console.log(user)
-      htmlToPDF(rowsToSend, hospital, user.nombre);
+      htmlToPDFReportes(rowsToSend, hospital, user.nombre);
 
       // Limpiar los datos de la tabla
       setData([{

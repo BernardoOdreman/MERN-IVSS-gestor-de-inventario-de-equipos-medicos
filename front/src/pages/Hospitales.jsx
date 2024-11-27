@@ -121,7 +121,7 @@ const Hospitales = () => {
 
         <label>Filtrar</label>
         <input
-          className={`form-control form-control-lg ${theme ? 'input-dark' : 'input-light'}`}
+          className={`form-control ${theme ? 'input-dark' : 'input-light'}`}
           type="text"
           placeholder="filtrar"
           onChange={(event) => {

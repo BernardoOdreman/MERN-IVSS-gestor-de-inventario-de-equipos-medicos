@@ -272,7 +272,7 @@ const AddEquipos = () => {
         }
         console.log(row)
 
-        if (!validateDate(row.fechaIngreso)) {
+        if (row.fechaIngreso!=='' && !validateDate(row.fechaIngreso)) {
           alert(`La fecha en la fila ${rowsToSend.indexOf(row) + 1} es incorrecta. La fecha debe estar en el formato YYMMDD.`);
           return; // No enviar si la fecha es incorrecta
         }
