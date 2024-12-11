@@ -18,28 +18,15 @@ import { enviarCodigoRecuperacion } from './services/mail.js'
 dotenv.config();
 const app = express();
 
-const SECRET = process.env.SECRET;
-const PORT = process.env.PORT || 3000;
-const CLIENT = process.env.PORT.CLIENT;
+const SECRET = process.env.SECRET || "VAMOS_VINOTINTO";
+const PORT = process.env.PORT  || 3000;
+const CLIENT = process.env.CLIENT || 'http://localhost:5173';
  
 app.use(express.json());// Middleware para parsear solicitudes JSON
 app.use(cookieParser());// Middleware para aceptar las cookies
 
 const ALLOWED_ORIGINS = [
-
-  CLIENT,
-
-  'http://0.0.0.0:5173',
-  'http://0.0.0.0:5174',
-
-  'http://192.168.1.136:5174',
-  'http://192.168.1.136:5173',
-
-  'http://192.168.1.106:5173',
-  'http://192.168.1.106:5174',
-
-  'http://localhost:5174/',
-  'http://localhost:5173',
+  CLIENT
 ];
 
 app.use(bodyParser.json({ limit: '50mb' }));  // Aumenta el límite de 50 MB
@@ -69,7 +56,7 @@ const generateToken = (user) => {
 }
 
 const generateTokenRecuparacion = (user) => {
-  const token = jwt.sign({ user }, Date.now, { expiresIn: '5m' })
+  const token = jwt.sign({ user }, SECRET, { expiresIn: '5m' })
   return token
 }
 
@@ -173,8 +160,8 @@ app.post('/login', (req, res) => {
 
         res.cookie('token', token, {
           httpOnly: true,
-          secure: true, // Change to true in production
-          sameSite: 'None', // Allow cross-origin requests
+          //secure: true, // Cambiar a true en produccion solo si usas https
+          //sameSite: 'None', // Permite cross-origin requests.   //// Descomentar junto secure : true
         });
 
         res.json({ userData: data });
@@ -262,7 +249,6 @@ app.post('/Insertequipos', authenticateJWTwithAccsesLevel(2), upload.any(), (req
 
 });
 
-
 app.delete('/eliminarHospital/:id', authenticateJWTwithAccsesLevel(3), async (req, res) => {
   await eliminarHospital(req.params.id)
 })
@@ -277,7 +263,6 @@ app.post('/crearUsuario', authenticateJWTwithAccsesLevel(3), async (req, res) =>
   crearUsuario(req.body)
 
 })
-
 
 app.get('/getUsuarios', authenticateJWTwithAccsesLevel(3), async (req, res) => {
   try {
@@ -338,7 +323,6 @@ app.post('/addReporte', authenticateJWTwithAccsesLevel(2), upload.any(), async (
 })
 
 
-//192.168.1.136
 app.listen(PORT, () => {
   console.log(`Servidor iniciado en el puerto ${PORT}`);
 });

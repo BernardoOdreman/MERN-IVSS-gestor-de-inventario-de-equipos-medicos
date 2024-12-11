@@ -13,8 +13,6 @@ function NavBar() {
 
   const toggleTheme = () => {
     const root = document.getElementById("body");
-    
-
     if (root) {
       if (!theme) {
         root.classList.add("dark");
@@ -23,7 +21,6 @@ function NavBar() {
       }
     }
   };
-
 
   const { user, setUser } = useUser();
   const { theme, setTheme } = usetheme();
@@ -75,7 +72,6 @@ function NavBar() {
           <li className="nav-item">
             <NavLink activeClassName="active" className=' navbar-brand' to="/Reportes">Ver Reportes</NavLink>
           </li>
-
         </>
       );
     }
@@ -93,8 +89,6 @@ function NavBar() {
             Ver Reportes
           </NavLink>
         </li>
-
-
 
         <li className={userMenuOpen ? 'nav-item dropdown dropUser ' : "nav-item dropdown"}>
           <NavLink
@@ -116,12 +110,9 @@ function NavBar() {
           </NavLink>
 
           <ul className={theme?' bg-dark dropdown-menu':`dropdown-menu`}>
-
-            <li  ><NavLink activeClassName="" className={theme?' text-light dropdown-item':`dropdown-item`} to={`/usuario/${user.nombre}`}>Editar Datos</NavLink></li>
+            <li><NavLink activeClassName="" className={theme?' text-light dropdown-item':`dropdown-item`} to={`/usuario/${user.nombre}`}>Editar Datos</NavLink></li>
             <li><button className={theme?' text-light dropdown-item':`dropdown-item`} onClick={handleLogout}>Salir</button></li>
-
           </ul>
-
         </li>
       </>
     );
@@ -134,16 +125,11 @@ function NavBar() {
               Registrar Hospital
             </NavLink>
           </li>
-
         )}
 
         {commonLinks}
         {user.tipoAcceso === 3 && (
           <>
-
-
-
-
             <li className={adminMenuOpen ? '"nav-item dropdown dropUser ' : "nav-item dropdown"}>
               <NavLink
                 activeClassName="active"
@@ -161,7 +147,7 @@ function NavBar() {
 
               <ul className={theme?' bg-dark dropdown-menu':`dropdown-menu`}>
                 <li>
-                  <NavLink activeClassName="active" className={theme?' text-light dropdown-item':`dropdown-item`}   to="/CrearUsuario">Crear Usuario</NavLink>
+                  <NavLink activeClassName="active" className={theme?' text-light dropdown-item':`dropdown-item`} to="/CrearUsuario">Crear Usuario</NavLink>
                 </li>
                 <li>
                   <NavLink activeClassName="active" className={theme?' text-light dropdown-item':`dropdown-item`} to="/eliminarUsuarios">
@@ -170,9 +156,7 @@ function NavBar() {
                 </li>
               </ul>
             </li>
-
           </>
-
         )}
       </>
     );
@@ -188,7 +172,27 @@ function NavBar() {
         <div className="nav-container">
           <ul className={click ? "nav-menu active" : "nav-menu"}>
             {Links()}
+
+            {/* Mover ReactSwitch aquí para móviles */}
+            <div className="switch-container">
+              <ReactSwitch
+                checked={theme}
+                onChange={() => {
+                  toggleTheme(),
+                  setTheme(!theme)
+                }}
+                onColor="#11f"
+                offColor="#ccc"
+                onHandleColor="#00c7ff"
+                offHandleColor="#aaa"
+                height={20}
+                width={40}
+                handleDiameter={20}
+              />
+              {theme ? <span className="text-light text-sm">Modo Oscuro</span> : <span>Modo Claro</span>}
+            </div>
           </ul>
+
           <div className="nav-icon" onClick={handleClick}>
             {click ? (
               <span className="icon">
@@ -200,32 +204,10 @@ function NavBar() {
               </span>
             )}
           </div>
-
-          <div>
-            <ReactSwitch
-              checked={theme}
-              onChange={() => {
-                toggleTheme(),
-                setTheme(!theme)
-              }}
-              onColor="#11f"
-              offColor="#ccc"
-              onHandleColor="#00c7ff"
-              offHandleColor="#aaa"
-              height={20}
-              width={40}
-              handleDiameter={20}
-            />
-            {'\u00A0'} 
-            {theme ? <span className="text-light text-sm"   > Modo Oscuro</span> : <span  >Modo Claro</span>}
-          </div>
-
         </div>
       </nav>
 
-      
-
-
+      <Buscador />
     </>
   );
 }

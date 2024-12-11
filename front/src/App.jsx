@@ -14,8 +14,7 @@ import Usuarios from './pages/eliminarUsuarios';
 import FichasEquipos from './pages/verReportes';
 import User from './pages/user';
 import CambiarClave from './pages/recuperarclave';
-import Buscador from './components/buscador';
-import './styles/App.css'
+ import './styles/App.css'
 
 
 const NotFound = () => <h2>Página no encontrada</h2>;
@@ -29,7 +28,6 @@ const App = () => {
         <UserProvider>
           <ThemeProvider> 
             <Navbar />
-            <Buscador />
 
             <div
             >

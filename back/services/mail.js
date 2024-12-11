@@ -1,7 +1,13 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 
 export function enviarCodigoRecuperacion(recuperationCode, recipientEmail) {
   // El contenido HTML del correo
+  const  email = process.env.EMAIL;
+  const accesKey = process.env.ACCESKEY;
   const htmlContent = `
   <!DOCTYPE html>
   <html lang="es">
@@ -82,14 +88,14 @@ export function enviarCodigoRecuperacion(recuperationCode, recipientEmail) {
   let transporter = nodemailer.createTransport({
     service: 'gmail',  // Especifica el servicio de Gmail
     auth: {
-      user: 'odremanbernardo@gmail.com',  // Tu dirección de correo Gmail
-      pass: 'qqzl wmtc jjff jxrr'  // Tu contraseña o contraseña de la aplicación
+      user: email,  // Tu dirección de correo Gmail
+      pass: accesKey  // Tu contraseña de la aplicación
     }
   });
 
   // Configurar el correo
   let mailOptions = {
-    from: 'odremanbernardo@gmail.com',  // El remitente
+    from:   email,  // El remitente
     to: recipientEmail,  // El destinatario
     subject: 'Recuperación de Contraseña',  // Asunto del correo
     text: `Hemos recibido una solicitud para recuperar tu contraseña. Tu código de recuperación es: ${recuperationCode}`,  // Contenido en texto plano

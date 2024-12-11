@@ -10,7 +10,7 @@ const HospitalForm = () => {
   const estadosVenezuela = [
     'Amazonas', 'Anzoátegui', 'Apure', 'Aragua', 'Barinas', 'Bolívar', 'Carabobo',
     'Cojedes', 'Delta Amacuro', 'Falcón', 'Guárico', 'Lara', 'Mérida', 'Miranda',
-    'Monagas', 'a Esparta', 'Portuguesa', 'Sucre', 'Táchira', 'Trujillo',
+    'Monagas', 'Nueva Esparta', 'Portuguesa', 'Sucre', 'Táchira', 'Trujillo',
     'Yaracuy', 'Zulia', 'Distrito Capital', 'Dependencias Federales',
   ];    
 
