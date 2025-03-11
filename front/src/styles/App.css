@@ -1,0 +1,75 @@
+.container{
+  max-width: 1200px;
+}
+.dark{
+  background-color: #333;
+ }
+
+.dark .form-control {
+  background-color: rgba(68, 72, 88, 0.719);
+  color: #fff;
+}
+
+.dark  th {
+  color: #fff;
+}
+
+.dark  td {
+  color: #fff;
+}
+
+.dark h1{
+  color: #fff;
+}
+
+.dark  span {
+  color: #fff;
+}
+
+.dark .container{
+  background-color: #333;
+  color: #fff;
+}
+
+.dark .card{
+  background-color: #454545;
+  color: #fff;
+}
+
+.dark input{
+  background-color: rgba(68, 72, 88, 0.719);
+  color: #fff;
+}
+.dark input:focus {
+  background-color: rgba(68, 72, 88, 0.719);
+  color: #fff;
+}
+
+.bg-red{
+  background-color: rgba(18, 18, 182, 0.768);
+  height: 10px;
+}
+
+.dark .navbar-brand{
+  color: white;
+}
+
+
+
+.footer-container {
+  margin-top: 10px; /* Margen superior para separar del contenido */
+  margin-top: auto; /* Empuja el footer hacia abajo */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+   
+  
+  
+}
+
+footer {
+  flex-shrink: 0; /* Evita que el footer se encoja */
+  
+}

@@ -1,0 +1,22 @@
+
+ 
+ input:focus {
+    border-color: #80bdff; /* Border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, .25); /* Adds shadow on focus */
+}
+.input-group {
+    margin: auto;
+ }
+
+.panel {
+    position: absolute; /* Mantiene la posición del panel relativo al input */
+    left: 0; /* Alinea el panel al inicio del input */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    padding-top: 60px;
+     width: 100%; /* Asegura que el panel tenga un ancho fijo */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Agrega una sombra para más visibilidad */
+}
+
+/* Mantén el resto de tus estilos */
